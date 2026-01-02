@@ -1,7 +1,8 @@
-const CACHE_NAME = 'kitchen-bar-app-v1';
+const CACHE_NAME = 'kitchen-bar-app-v2';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/info.html',
   '/manifest.json'
 ];
 
