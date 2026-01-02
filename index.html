@@ -125,6 +125,46 @@
         .toast.show {
             opacity: 1;
         }
+        
+        /* НОВАЯ КНОПКА ТЕХКАРТ */
+        .tech-card-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #F37121;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .tech-card-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            background: #E0661B;
+        }
+        
+        .tech-card-btn i {
+            font-size: 18px;
+        }
+        
+        @media (max-width: 600px) {
+            .tech-card-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 
@@ -170,6 +210,11 @@
         <div id="selectedBar">Нет выбранных продуктов</div>
     </div>
 </div>
+
+<!-- НОВАЯ КНОПКА ТЕХКАРТ -->
+<a href="info.html" class="tech-card-btn">
+    <i class="fas fa-book"></i> Техкарты
+</a>
 
 <div id="toast" class="toast"></div>
 
@@ -501,6 +546,9 @@ renderSelected("kitchen");
 renderSelected("bar");
 
 </script>
+
+<!-- Подключение Font Awesome для иконки -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </body>
 </html>
