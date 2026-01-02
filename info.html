@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl & Coffee - Рецепты</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Сохраняем оригинальный шрифт из вашего проекта */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f4e9, #f1e9d7); 
+            color: #3c2f2f; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 30px auto; 
+            background: rgba(255, 253, 248, 0.92); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 25px rgba(139, 87, 42, 0.1);
+            border: 1px solid rgba(210, 180, 140, 0.3);
+        }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { 
+            font-size: 2.5em; 
+            color: #8b4513; /* Коричневый, как кофейные зерна */
+            margin-bottom: 10px; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .subtitle { 
+            color: #654321; /* Темный коричневый */
+            font-size: 1.1em; 
+            margin-bottom: 25px; 
+            opacity: 0.9;
+        }
+        .back-button { 
+            display: inline-block; 
+            margin-bottom: 25px; 
+            padding: 12px 28px; 
+            background: #d35400; /* Теплый оранжевый */
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 4px 8px rgba(211, 84, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+        .back-button:hover { 
+            background: #e67e22; /* Светлее оранжевый */
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 12px rgba(230, 126, 34, 0.3);
+        }
+
+        /* Настройки колонок - на 1080p и больше всегда 2 колонки */
+        .recipes-container { 
+            display: grid;
+            gap: 25px;
+        }
+        
+        /* На экранах шире 768px (планшеты, десктопы) - 2 колонки */
+        @media (min-width: 768px) {
+            .recipes-container { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        /* На телефонах - 1 колонка */
+        @media (max-width: 767px) {
+            .recipes-container { grid-template-columns: 1fr; }
+            .container { padding: 20px 15px; }
+        }
+        
+        /* Стили для карточки рецепта */
+        .recipe-card { 
+            background: #fffef9;
+            border-radius: 12px;
+            padding: 22px;
+            border: 1px solid #e8d4b9;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .recipe-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.15);
+            border-color: #d35400;
+        }
+        .recipe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #27ae60, #2ecc71); /* Тёмно-зелёный градиент */
+        }
+        .recipe-title { 
+            color: #5d4037; /* Тёплый коричневый */
+            margin-bottom: 18px; 
+            font-size: 1.25em;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0c9a6;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        .recipe-title i {
+            margin-right: 12px;
+            color: #e67e22; /* Оранжевый акцент */
+        }
+        .ingredients { 
+            line-height: 1.9;
+            white-space: pre-line;
+            font-size: 0.95em;
+            color: #5d4037;
+            background: #f9f5f0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #d35400;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Сохраняем основной шрифт */
+        }
+        
+        /* Заголовки разделов */
+        .section-title {
+            grid-column: 1 / -1;
+            color: #2d4d2d; /* Тёмно-зелёный */
+            margin: 35px 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #a1887f;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        .section-title i {
+            margin-right: 15px;
+            color: #e67e22; /* Оранжевый для иконок */
+        }
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        footer { 
+            text-align: center; 
+            margin-top: 40px; 
+            color: #8d6e63; 
+            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid #e0c9a6;
+        }
+        
+        /* Дополнительные декоративные элементы */
+        .decorative-line {
+            height: 3px;
+            background: linear-gradient(to right, transparent, #27ae60, transparent);
+            margin: 10px 0 25px 0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-book-open"></i> Книга рецептов</h1>
+            <div class="decorative-line"></div>
+            <p class="subtitle">Полный список рецептов и ингредиентов для вашего кафе</p>
+            <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i> Назад к списку</a>
+        </header>
+
+        <main class="recipes-container">
+            <h2 class="section-title"><i class="fas fa-utensils"></i> Основное меню</h2>
+            
+            <!-- Рецепт 1 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-egg"></i> Вафля - бенедикт</h3>
+                <div class="ingredients">Вафля 80 гр
+Салат 5гр
+Пластинка сыра 15гр
+2 слайс бекон 40 гр
+Вафля 80 гр
+Яйцо пашот
+Голландский соус 60гр
+Микрозелень</div>
+            </div>
+            
+            <!-- Рецепт 2 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-fish"></i> Вафля с лососем</h3>
+                <div class="ingredients">Вафля
+Творожный сыр 25 гр.
+Салат 5гр
+Авокадо 15 гр.
+Рыба 60 гр.
+1 яйцо пашот
+Семена льна
+Семена тыквы
+Накрыть вафлей</div>
+            </div>
+            
+            <!-- Рецепт 3 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-bacon"></i> Венский завтрак</h3>
+                <div class="ingredients">Картофельные вафли - порция
+Вяленые томаты - 20-25 гр
+2 яйца ~95 гр
+5 томата круг ~ 35 гр
+Ветчина 1 кусок
+Моцарелла
+2 бекона ~ 40 гр
+Шпинат</div>
+            </div>
+            
+            <!-- Рецепт 4 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-cherry"></i> Вафля с вишней</h3>
+                <div class="ingredients">Вафля
+Вишневый конфи ~ 60 г
+Вафля
+Маскарпоне ~ 45 г
+Лепестки миндаля
+Шоко печенье
+Сахарная пудра</div>
+            </div>
+            
+            <!-- Рецепт 5 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-egg"></i> Французский омлет</h3>
+                <div class="ingredients">3 яйца
+чеснок/соль
+Мощность 800
+курица 60 гр
+Томата круг 5 шт ~ 35 гр
+Сыр творожный 30гр
+Моцарелла 40 гр
+Подача со сметаной
+Микрозелень и томат</div>
+            </div>
+            
+            <!-- Рецепт 6 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-bread-slice"></i> Скрэмбл с лососем и авокадо</h3>
+                <div class="ingredients">Рыба 30 гр
+Творожный сыр ст. лож
+Авокадо
+Хлеб
+15 гр. сливочного масла
+2 яйца
+Соль
+Суш. чеснок
+Салатом посыпать</div>
+            </div>
+            
+            <!-- Рецепт 7 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-pear"></i> Вафля с грушей</h3>
+                <div class="ingredients">Вафля
+Творожный сыр 25гр
+Вафля
+Груша (подогретая) 50 гр
+Пломбир шар 30 гр
+Карамель, корица, орехи</div>
+            </div>
+            
+            <!-- Рецепт 8 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-hamburger"></i> Вафля-бургер</h3>
+                <div class="ingredients">Вафля
+Моцарелла
+Шпинат
+Помидор
+Чеддер
+Котлета
+Голландез
+Вафля</div>
+            </div>
+            
+            <!-- Рецепт 9 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-pepper-hot"></i> Чиккен карри с ананасом</h3>
+                <div class="ingredients">Вафля
+Карри
+Салат
+Курица
+Ананас
+Карри
+Вафля</div>
+            </div>
+            
+            <!-- Рецепт 10 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-drumstick-bite"></i> Индейка в сливочно-чесночном</h3>
+                <div class="ingredients">Вафля
+Творожный соус
+Салат
+Огурцы
+50 гр индейка
+50 гр сливочно-чесноч
+Вафля</div>
+            </div>
+            
+            <!-- Рецепт 11 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-pepper-hot"></i> Кура-чипотл</h3>
+                <div class="ingredients">Вафля
+15гр соус чипотл
+Салат
+Помидоры
+60 гр кура
+1 ломт чеддер
+Соус чипотл
+Вафля</div>
+            </div>
+            
+            <!-- Рецепт 12 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-cheese"></i> Ветчина моцарелла</h3>
+                <div class="ingredients">Вафля
+15 гр творо соус
+Салат
+Помидоры
+2 ветчина
+20 гр моцарелла
+15 гр творо соус
+Вафля</div>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-flask"></i> Соусы и основы</h2>
+            
+            <!-- Рецепт 13 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-mortar-pestle"></i> Шоколадный соус</h3>
+                <div class="ingredients">Сахар - 134 г
+Мука - 14 г
+Какао - 50 г
+ванильный сахар - 10 гр
+Соль щеп
+Молоко - 400 мл
+Венчиком при tо 160 довести до копения
+Добавить:
+Сливоч масло 16 гр</div>
+            </div>
+            
+            <!-- Рецепт 14 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-balance-scale"></i> Тесто для вафель</h3>
+                <div class="ingredients">27 яиц
+830 гр молока
+550 гр сахара
+10 грамм соли
+500 сливочного масла
+500 подсолнеч. масло
+1200 гр. муки
+45 гр. разрыхлитель</div>
+            </div>
+            
+            <!-- Рецепт 15 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-apple-alt"></i> Груша карамелизированная</h3>
+                <div class="ingredients">650 груша
+30 масло слив
+60 сахар</div>
+            </div>
+            
+            <!-- Рецепт 16 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-potato"></i> Картофельное тесто</h3>
+                <div class="ingredients">12 яиц
+150 масло сливочное
+300 молоко
+1 чайная ложка соль
+1 чайная ложка чеснок
+200 картофельные хлопья</div>
+            </div>
+            
+            <!-- Рецепт 17 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-fire"></i> Карамель кухня</h3>
+                <div class="ingredients">400 гр сахар
+150 гр. сливки 35%
+200 гр. сливки 10%
+50 гр. сливоч масло
+Немного подсолить</div>
+            </div>
+            
+            <!-- Рецепт 18 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-cocktail"></i> Карамель бар</h3>
+                <div class="ingredients">500 гр сахара
+400 гр воды
+1,5 ложки лимонного сока</div>
+            </div>
+            
+            <!-- Рецепт 19 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-jar"></i> Конфитюр вишневый</h3>
+                <div class="ingredients">1000 гр вишня
+200 гр сахар
+50 гр крахмал</div>
+            </div>
+            
+            <!-- Рецепт 20 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-garlic"></i> Соус сливочно-чесночный</h3>
+                <div class="ingredients">10 гр чеснок сушеный
+150 гр майонез
+50 гр тертый сыр
+Перемешать</div>
+            </div>
+            
+            <!-- Рецепт 21 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-turkey"></i> Маринад индейки (1 кг)</h3>
+                <div class="ingredients">3 гр базилик
+5 гр чеснок суш
+3 гр укроп суш
+2 гр соль
+50 мл масло подсол</div>
+            </div>
+            
+            <!-- Рецепт 22 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-globe-asia"></i> Рецепт Карри</h3>
+                <div class="ingredients">Майонез - 200 г
+Приправа Карри - 15 г
+Сок лимона - 5 г
+Сахарный песок - 2 г
+Соль - 1 г
+Вода (опционально) - 30 мл</div>
+            </div>
+            
+            <!-- Рецепт 23 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-pepper-hot"></i> Соус Чипотл</h3>
+                <div class="ingredients">600 гр майонез
+7.5 гр жид дым
+3 гр чили перец
+7.5 гр паприка
+6 гр сахар
+4.5 гр соль
+1.5 гр перец черн
+5 гр лимон сок</div>
+            </div>
+            
+            <!-- Рецепт 24 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-cheese"></i> Творожный соус</h3>
+                <div class="ingredients">400 гр творожный сыр
+200 гр сливки 33</div>
+            </div>
+            
+            <!-- Рецепт 25 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-whipping-cream"></i> Крем-чиз</h3>
+                <div class="ingredients">400 гр творожный сыр
+200 гр сливки 33
+40 гр сахарная пудра</div>
+            </div>
+            
+            <!-- Рецепт 26 -->
+            <div class="recipe-card">
+                <h3 class="recipe-title"><i class="fas fa-candy-cane"></i> Белый шоколадный соус</h3>
+                <div class="ingredients">Белый шоколад 300
+Сметана 200
+Творожный сыр 200</div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Vinyl & Coffee PWA • Книга рецептов • <span id="currentYear"></span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Простой скрипт для отображения текущего года в футере
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
